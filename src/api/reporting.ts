@@ -39,6 +39,7 @@ export const getAllChildByDonor = async (id: number, onProgress?: (percent: numb
     export const getAllChildByID = async (id: number, onProgress?: (percent: number) => void) =>{
     try{
       if (onProgress) { try { onProgress(0); } catch {/* ignore */ } }
+      console.log("this backend thing should print");
       const response = await api.get(`/reporting/childByChildID/${id}`,{
         responseType: "blob",
          onDownloadProgress: (progressEvent) => {

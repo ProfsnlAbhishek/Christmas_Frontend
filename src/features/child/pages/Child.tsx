@@ -32,11 +32,11 @@ import { useUpdateChild } from "../hooks/useUpdateChild";
 import { toErrorMessage } from "../../../utlis/errors";
 import { useDeleteChild } from "../hooks/useDeleteChild";
 import { toUpperStr } from "../../../utlis/formatting";
-import { useDonor } from "../../donor/hooks/useDonor";
 import { useArchiveChild } from "../../archive/hooks/useArchiveChild";
 
 import useDymo from "../../../hooks/useDymo";
 import Toast from "../../../utlis/Toast";
+import { useActiveDonors } from "../../donor/hooks/useActiveDonors";
 
 export default function Child() {
   const [selectedChild, setSelectedChild] = React.useState<Child | null>(null);
@@ -141,7 +141,7 @@ export default function Child() {
   const createMutation = useCreateChild();
   const updateMutation = useUpdateChild(selectedChild?.childID ?? NaN);
 
-  const { data: allDonors, isLoading: allDonorsLoading } = useDonor();
+  const { data: allDonors, isLoading: allDonorsLoading } = useActiveDonors();
 
   const submit = handleSubmit(async (vals) => {
     try {

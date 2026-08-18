@@ -31,7 +31,7 @@ const router = createBrowserRouter([
     }
   
 ],
-{basename: "/Christmas"}
+// {basename: "/Christmas"}
 );
 export default function AppRouter(){
     return <RouterProvider router={router} />

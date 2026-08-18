@@ -27,3 +27,8 @@ export const archiveDonors = async () : Promise<void> => {
     await api.get(`/donor/archive`);
 }
 
+export const getAllActiveDonors = async () : Promise<Donor[]> => {
+    const {data} = await api.get<Donor[]>(`/donor/allActiveDonors/`);
+    return data;
+}
+
