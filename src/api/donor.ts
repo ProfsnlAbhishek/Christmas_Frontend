@@ -28,7 +28,7 @@ export const archiveDonors = async () : Promise<void> => {
 }
 
 export const getAllActiveDonors = async () : Promise<Donor[]> => {
-    const {data} = await api.get<Donor[]>(`/donor/allActiveDonors/`);
+    const {data} = await api.get<Donor[]>(`/donor/active/`);
     return data;
 }
 
