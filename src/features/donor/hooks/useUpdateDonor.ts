@@ -9,7 +9,8 @@ export function useUpdateDonor(id: number){
         mutationFn: (payload) => updateDonor(id, payload),
         onSuccess: () => {
             qc.invalidateQueries({queryKey: ["kare", "donors", id]});
-            qc.invalidateQueries({queryKey: ["kare", "donors"]})
+            qc.invalidateQueries({queryKey: ["kare", "donors"]});
+            qc.invalidateQueries({queryKey:  ["donors", "active"]});
         }
     });
     
