@@ -5,7 +5,7 @@ export const ChildSchema = z.object({
     f_name : z.string().min(1,"Child first name is required"),
     l_name : z.string().min(1,"Child last name is required"),
     age : z.number().optional().nullable(),
-    sacwisID: z.number().min(1, "Sacwis ID is required"),
+    sacwisID: z.string().optional(),
     gender: z.string().min(1, "Gender is required"),
     race: z.string().optional(),
     clothing_type: z.number().optional().nullable(),

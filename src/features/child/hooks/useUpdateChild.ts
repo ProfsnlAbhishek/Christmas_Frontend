@@ -7,8 +7,12 @@ export function useUpdateChild(id:number){
     const qc = useQueryClient();
     return useMutation<Child, Error, ChildInput>({
         mutationFn: (payload) => updateChild(id, payload),
-        onSuccess: () => 
-            qc.invalidateQueries({queryKey: ["kare", "childs"]})
+        onSuccess: () => {
+            qc.invalidateQueries({queryKey: ["kare", "childs"]});
+            qc.invalidateQueries({queryKey: ["kare", "child", "unassociated", "donor" ]});
+
+
+        }
     })
 }
 

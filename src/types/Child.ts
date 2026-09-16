@@ -3,7 +3,7 @@ export interface Child{
     f_name: string;
     l_name: string;
     age?: number | null;
-    sacwisID: number | null;
+    sacwisID: string;
     gender: string | null;
     race: string;
     clothing_type?: number | null;

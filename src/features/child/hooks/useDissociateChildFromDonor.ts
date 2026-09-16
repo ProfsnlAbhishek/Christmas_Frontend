@@ -12,6 +12,8 @@ export function useDissociateChildFromDonor(childID: number, donorID: number) {
         onSuccess: () => {
             qc.invalidateQueries({queryKey: ["kare", "child", "unassociated", "donor" ]});
             qc.invalidateQueries({ queryKey: ["kare", "child", "donor", donorID] });
+            qc.invalidateQueries({queryKey: ["kare", "childs"]});
+
         }
     });
 }

@@ -667,8 +667,8 @@
               <Y>0.7099675</Y>
             </DYMOPoint>
             <Size>
-              <Width>2.160361</Width>
-              <Height>0.35648188</Height>
+              <Width>2.0471363</Width>
+              <Height>0.35648203</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -732,8 +732,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.6328387</X>
-              <Y>0.7684505</Y>
+              <X>3.3727322</X>
+              <Y>0.7572228</Y>
             </DYMOPoint>
             <Size>
               <Width>0.35608754</Width>
@@ -801,8 +801,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.9634972</X>
-              <Y>0.7692784</Y>
+              <X>3.7177606</X>
+              <Y>0.75955945</Y>
             </DYMOPoint>
             <Size>
               <Width>0.33796567</Width>
@@ -939,8 +939,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.446455</X>
-              <Y>1.0401756</Y>
+              <X>1.4645272</X>
+              <Y>1.0401757</Y>
             </DYMOPoint>
             <Size>
               <Width>1.0811796</Width>
@@ -1008,8 +1008,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.6328387</X>
-              <Y>1.0664498</Y>
+              <X>3.3660812</X>
+              <Y>1.0601085</Y>
             </DYMOPoint>
             <Size>
               <Width>0.43634596</Width>
@@ -1077,8 +1077,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>4.0691857</X>
-              <Y>1.0653862</Y>
+              <X>3.8024273</X>
+              <Y>1.0612453</Y>
             </DYMOPoint>
             <Size>
               <Width>1.4653867</Width>
@@ -1353,12 +1353,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.4986975</X>
-              <Y>1.8574905</Y>
+              <X>1.5095505</X>
+              <Y>1.857491</Y>
             </DYMOPoint>
             <Size>
-              <Width>2.0220115</Width>
-              <Height>0.205104</Height>
+              <Width>3.8155043</Width>
+              <Height>0.20510384</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1422,8 +1422,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.6214674</X>
-              <Y>1.8436002</Y>
+              <X>3.3692033</X>
+              <Y>1.594053</Y>
             </DYMOPoint>
             <Size>
               <Width>0.22223167</Width>
@@ -1491,8 +1491,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.8510115</X>
-              <Y>1.8505454</Y>
+              <X>3.5973873</X>
+              <Y>1.600998</Y>
             </DYMOPoint>
             <Size>
               <Width>0.4583393</Width>
@@ -1633,8 +1633,8 @@
               <Y>1.330413</Y>
             </DYMOPoint>
             <Size>
-              <Width>1.5600264</Width>
-              <Height>0.19010991</Height>
+              <Width>1.4603893</Width>
+              <Height>0.19010973</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1698,8 +1698,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.6328385</X>
-              <Y>1.328619</Y>
+              <X>3.3660812</X>
+              <Y>1.336837</Y>
             </DYMOPoint>
             <Size>
               <Width>1.0901557</Width>
@@ -1767,12 +1767,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>4.7287827</X>
-              <Y>1.3304131</Y>
+              <X>4.455881</X>
+              <Y>1.3386313</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.58335376</Width>
-              <Height>0.1924931</Height>
+              <Width>1.2500204</Width>
+              <Height>0.19249305</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1905,12 +1905,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.8079638</X>
-              <Y>2.1592712</Y>
+              <X>1.7760288</X>
+              <Y>2.1839027</Y>
             </DYMOPoint>
             <Size>
-              <Width>3.061556</Width>
-              <Height>0.8200137</Height>
+              <Width>3.709668</Width>
+              <Height>1.1940969</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
