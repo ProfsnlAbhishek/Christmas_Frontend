@@ -55,7 +55,7 @@ export default function Child() {
       childID: 0,
       f_name: "",
       l_name: "",
-      age: null,
+      age: 0,
       sacwisID: "",
       gender: "",
       race: "",
@@ -75,7 +75,7 @@ export default function Child() {
       childID: child.childID ?? 0,
       f_name: child.f_name ?? "",
       l_name: child.l_name ?? "",
-      age: child.age ?? null,
+      age: child.age ?? 0,
       sacwisID: child.sacwisID ?? "",
       gender: child.gender ?? "",
       race: child.race ?? "",
@@ -1070,8 +1070,8 @@ const handlePrintPdfRollo = async () => {
     // 6 x 4 INCH
     // ==================================================
 
-    const labelWidth = 152.4; // 6 inches in mm
-    const labelHeight = 101.6; // 4 inches in mm
+    const labelWidth = 152.4;
+    const labelHeight = 101.6;
 
     // ==================================================
     // CREATE PDF
@@ -1086,132 +1086,130 @@ const handlePrintPdfRollo = async () => {
     });
 
     // ==================================================
-// CHRISTMAS LIGHT SETTINGS
-// ==================================================
+    // CHRISTMAS LIGHT SETTINGS
+    // ==================================================
 
-const topBottomLightHeight = 11;
-const topBottomLightWidth = 23;
+    const topBottomLightHeight = 11;
+    const topBottomLightWidth = 23;
 
-const sideLightWidth = 11;
-const sideLightHeight = 23;
+    const sideLightWidth = 11;
+    const sideLightHeight = 23;
 
-// How far inside the label the lights should be
-const lightInset = 3;
+    const lightInset = 3;
 
-// ==================================================
-// DRAW CHRISTMAS LIGHTS
-// ==================================================
+    // ==================================================
+    // DRAW CHRISTMAS LIGHTS
+    // ==================================================
 
-const drawLights = () => {
-  // ==================================================
-  // TOP
-  // ==================================================
+    const drawLights = () => {
+      // ==================================================
+      // TOP
+      // ==================================================
 
-  for (
-    let x = lightInset;
-    x < labelWidth - lightInset;
-    x += topBottomLightWidth
-  ) {
-    const remainingWidth =
-      labelWidth - lightInset - x;
+      for (
+        let x = lightInset;
+        x < labelWidth - lightInset;
+        x += topBottomLightWidth
+      ) {
+        const remainingWidth =
+          labelWidth - lightInset - x;
 
-    const drawWidth = Math.min(
-      topBottomLightWidth,
-      remainingWidth,
-    );
+        const drawWidth = Math.min(
+          topBottomLightWidth,
+          remainingWidth,
+        );
 
-    pdf.addImage(
-      lightImage,
-      "PNG",
-      x,
-      lightInset - 6,
-      drawWidth,
-      topBottomLightHeight,
-    );
-  }
+        pdf.addImage(
+          lightImage,
+          "PNG",
+          x,
+          lightInset - 6,
+          drawWidth,
+          topBottomLightHeight,
+        );
+      }
 
-  // ==================================================
-  // BOTTOM
-  // ==================================================
+      // ==================================================
+      // BOTTOM
+      // ==================================================
 
-  for (
-    let x = lightInset;
-    x < labelWidth - lightInset;
-    x += topBottomLightWidth
-  ) {
-    const remainingWidth =
-      labelWidth - lightInset - x;
+      for (
+        let x = lightInset;
+        x < labelWidth - lightInset;
+        x += topBottomLightWidth
+      ) {
+        const remainingWidth =
+          labelWidth - lightInset - x;
 
-    const drawWidth = Math.min(
-      topBottomLightWidth,
-      remainingWidth,
-    );
+        const drawWidth = Math.min(
+          topBottomLightWidth,
+          remainingWidth,
+        );
 
-    pdf.addImage(
-      lightImage,
-      "PNG",
-      x,
-      labelHeight - lightInset - 5,
-      drawWidth,
-      topBottomLightHeight,
-    );
-  }
+        pdf.addImage(
+          lightImage,
+          "PNG",
+          x,
+          labelHeight - lightInset - 5,
+          drawWidth,
+          topBottomLightHeight,
+        );
+      }
 
-  // ==================================================
-  // LEFT
-  // ==================================================
+      // ==================================================
+      // LEFT
+      // ==================================================
 
-  for (
-    let y = lightInset;
-    y < labelHeight - lightInset;
-    y += sideLightHeight
-  ) {
-    const remainingHeight =
-      labelHeight - lightInset - y;
+      for (
+        let y = lightInset;
+        y < labelHeight - lightInset;
+        y += sideLightHeight
+      ) {
+        const remainingHeight =
+          labelHeight - lightInset - y;
 
-    const drawHeight = Math.min(
-      sideLightHeight,
-      remainingHeight,
-    );
+        const drawHeight = Math.min(
+          sideLightHeight,
+          remainingHeight,
+        );
 
-    pdf.addImage(
-      sideLightImage,
-      "PNG",
-      lightInset - 6,
-      y,
-      sideLightWidth,
-      drawHeight,
-    );
-  }
+        pdf.addImage(
+          sideLightImage,
+          "PNG",
+          lightInset - 6,
+          y,
+          sideLightWidth,
+          drawHeight,
+        );
+      }
 
-  // ==================================================
-  // RIGHT
-  // ==================================================
+      // ==================================================
+      // RIGHT
+      // ==================================================
 
-  for (
-    let y = lightInset;
-    y < labelHeight - lightInset;
-    y += sideLightHeight
-  ) {
-    const remainingHeight =
-      labelHeight - lightInset - y;
+      for (
+        let y = lightInset;
+        y < labelHeight - lightInset;
+        y += sideLightHeight
+      ) {
+        const remainingHeight =
+          labelHeight - lightInset - y;
 
-    const drawHeight = Math.min(
-      sideLightHeight,
-      remainingHeight,
-    );
+        const drawHeight = Math.min(
+          sideLightHeight,
+          remainingHeight,
+        );
 
-    pdf.addImage(
-      sideLightImage,
-      "PNG",
-      labelWidth - lightInset - 5,
-      y,
-      sideLightWidth,
-      drawHeight,
-    );
-  }
-};
-
+        pdf.addImage(
+          sideLightImage,
+          "PNG",
+          labelWidth - lightInset - 5,
+          y,
+          sideLightWidth,
+          drawHeight,
+        );
+      }
+    };
 
     // ==================================================
     // PROCESS EACH CHILD
@@ -1231,8 +1229,6 @@ const drawLights = () => {
 
       // ==================================================
       // LABEL POSITION
-      // Since the PDF page itself is 6x4,
-      // the label starts at 0,0.
       // ==================================================
 
       const labelX = 0;
@@ -1292,6 +1288,7 @@ const drawLights = () => {
 
       // ==================================================
       // TEXT SETTINGS
+      // EVERYTHING IS BOLD
       // ==================================================
 
       const leftX = labelX + 9;
@@ -1303,6 +1300,8 @@ const drawLights = () => {
 
       pdf.setTextColor(25, 25, 25);
 
+      pdf.setFont("helvetica", "bold");
+
       pdf.setFontSize(8.5);
 
       // ==================================================
@@ -1310,11 +1309,11 @@ const drawLights = () => {
       // NAME / AGE
       // ==================================================
 
-      pdf.setFont("helvetica", "bold");
-
-      pdf.text("NAME:", leftX, y);
-
-      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        "NAME:",
+        leftX,
+        y,
+      );
 
       pdf.text(
         name.toUpperCase(),
@@ -1322,11 +1321,11 @@ const drawLights = () => {
         y,
       );
 
-      pdf.setFont("helvetica", "bold");
-
-      pdf.text("AGE:", rightX, y);
-
-      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        "AGE:",
+        rightX,
+        y,
+      );
 
       pdf.text(
         String(child.age ?? ""),
@@ -1341,11 +1340,11 @@ const drawLights = () => {
 
       y += rowSpacing;
 
-      pdf.setFont("helvetica", "bold");
-
-      pdf.text("GENDER:", leftX, y);
-
-      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        "GENDER:",
+        leftX,
+        y,
+      );
 
       pdf.text(
         gender,
@@ -1353,11 +1352,11 @@ const drawLights = () => {
         y,
       );
 
-      pdf.setFont("helvetica", "bold");
-
-      pdf.text("RACE:", rightX, y);
-
-      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        "RACE:",
+        rightX,
+        y,
+      );
 
       pdf.text(
         String(child.race ?? "").toUpperCase(),
@@ -1377,15 +1376,11 @@ const drawLights = () => {
 
         y += rowSpacing;
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "GIFT CERTIFICATE:",
           leftX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           "X",
@@ -1393,15 +1388,11 @@ const drawLights = () => {
           y,
         );
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "STORE:",
           rightX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           giftCard.toUpperCase(),
@@ -1416,15 +1407,11 @@ const drawLights = () => {
 
         y += rowSpacing;
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "WORKER:",
           leftX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           workerName.toUpperCase(),
@@ -1439,15 +1426,11 @@ const drawLights = () => {
 
         y += rowSpacing;
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "ID:",
           leftX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           String(child.childID ?? ""),
@@ -1492,15 +1475,11 @@ const drawLights = () => {
 
         y += rowSpacing;
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "CLOTHING FOR:",
           leftX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           clothingFor.toUpperCase(),
@@ -1508,15 +1487,11 @@ const drawLights = () => {
           y,
         );
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "SIZE:",
           rightX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           String(child.size ?? "").toUpperCase(),
@@ -1531,15 +1506,11 @@ const drawLights = () => {
 
         y += rowSpacing;
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "SHOES:",
           leftX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           String(child.shoe_size ?? ""),
@@ -1547,15 +1518,11 @@ const drawLights = () => {
           y,
         );
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "ID:",
           rightX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           String(child.childID ?? ""),
@@ -1570,15 +1537,11 @@ const drawLights = () => {
 
         y += rowSpacing;
 
-        pdf.setFont("helvetica", "bold");
-
         pdf.text(
           "WORKER:",
           leftX,
           y,
         );
-
-        pdf.setFont("helvetica", "normal");
 
         pdf.text(
           workerName.toUpperCase(),
@@ -1634,9 +1597,10 @@ const drawLights = () => {
           .trim();
 
         if (suggestion !== "") {
+          // ALL SUGGESTION TEXT BOLD
           pdf.setFont(
             "helvetica",
-            "normal",
+            "bold",
           );
 
           pdf.setFontSize(
@@ -1747,6 +1711,12 @@ const drawLights = () => {
             lastLine &&
             lastLine.y > maxTextBottom
           ) {
+            // KEEP BOLD WHEN SHRINKING
+            pdf.setFont(
+              "helvetica",
+              "bold",
+            );
+
             pdf.setFontSize(7);
 
             const smallerLineHeight =
@@ -1805,6 +1775,12 @@ const drawLights = () => {
           // ==================================================
           // PRINT SUGGESTION
           // ==================================================
+
+          // MAKE ABSOLUTELY SURE IT IS BOLD
+          pdf.setFont(
+            "helvetica",
+            "bold",
+          );
 
           for (
             const line of finalLines
@@ -1872,6 +1848,7 @@ const drawLights = () => {
     });
   }
 };
+
 
   return (
     <Box
@@ -2066,6 +2043,8 @@ const drawLights = () => {
                             field.value !== null && field.value !== undefined,
                         },
                       }}
+                         error={!!errors.age}
+                      helperText={errors.age?.message}
                     />
                   )}
                 />
