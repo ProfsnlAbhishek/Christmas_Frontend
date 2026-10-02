@@ -15,4 +15,13 @@ export default defineConfig({
   //     },
   //   },
   // },
+  // server: {
+  //   proxy: {
+  //     "/Christmas/api": {
+  //       target: "http://localhost:80",
+  //       changeOrigin: true,
+  //       secure: false,
+  //     },
+  //   },
+  // },
 });
