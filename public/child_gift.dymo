@@ -579,7 +579,7 @@
                 <Text>NAME:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -598,8 +598,8 @@
               <Y>0.9385493</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.5058119</Width>
-              <Height>0.31598514</Height>
+              <Width>0.57352036</Width>
+              <Height>0.3159852</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -648,7 +648,7 @@
                 <Text>name</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -663,12 +663,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.3091335</X>
-              <Y>0.9183011</Y>
+              <X>1.3020655</X>
+              <Y>0.90854853</Y>
             </DYMOPoint>
             <Size>
-              <Width>2.257827</Width>
-              <Height>0.35648182</Height>
+              <Width>2.2358303</Width>
+              <Height>0.35648185</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -717,7 +717,7 @@
                 <Text>AGE:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -732,12 +732,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.6022015</X>
-              <Y>0.97678375</Y>
+              <X>3.4089038</X>
+              <Y>0.9776114</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.35608754</Width>
-              <Height>0.23992677</Height>
+              <Width>0.3873374</Width>
+              <Height>0.23992682</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -786,7 +786,7 @@
                 <Text>age</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -801,12 +801,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.9470353</X>
-              <Y>0.97761154</Y>
+              <X>3.8271055</X>
+              <Y>0.98530465</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.33796567</Width>
-              <Height>0.22454052</Height>
+              <Width>0.6795257</Width>
+              <Height>0.22454044</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -855,7 +855,7 @@
                 <Text>GENDER:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -924,7 +924,7 @@
                 <Text>gender</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -939,8 +939,8 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.4158177</X>
-              <Y>1.2485088</Y>
+              <X>1.475373</X>
+              <Y>1.2650303</Y>
             </DYMOPoint>
             <Size>
               <Width>1.0811796</Width>
@@ -993,7 +993,7 @@
                 <Text>RACE:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1008,11 +1008,11 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.6022015</X>
-              <Y>1.2747829</Y>
+              <X>3.4089038</X>
+              <Y>1.2675576</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.43634596</Width>
+              <Width>0.49363774</Width>
               <Height>0.22916946</Height>
             </Size>
           </ObjectLayout>
@@ -1062,7 +1062,7 @@
                 <Text>race</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1077,12 +1077,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>4.0385485</X>
-              <Y>1.2737193</Y>
+              <X>3.9025412</X>
+              <Y>1.2545345</Y>
             </DYMOPoint>
             <Size>
-              <Width>1.4910353</Width>
-              <Height>0.23844957</Height>
+              <Width>1.7091026</Width>
+              <Height>0.23844965</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1131,7 +1131,7 @@
                 <Text>GIFT CERTIFICATE:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1150,8 +1150,8 @@
               <Y>1.4701898</Y>
             </DYMOPoint>
             <Size>
-              <Width>1.254075</Width>
-              <Height>0.3680594</Height>
+              <Width>1.4657737</Width>
+              <Height>0.3680595</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1200,7 +1200,7 @@
                 <Text>certificate</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1215,12 +1215,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.9778345</X>
-              <Y>1.5465801</Y>
+              <X>2.1989086</X>
+              <Y>1.5441053</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.7152885</Width>
-              <Height>0.21527831</Height>
+              <Width>1.3436501</Width>
+              <Height>0.22199878</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1269,7 +1269,7 @@
                 <Text>WORKER:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1284,12 +1284,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>0.735258</X>
-              <Y>1.8382492</Y>
+              <X>0.7352579</X>
+              <Y>1.8228172</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.68055975</Width>
-              <Height>0.19444561</Height>
+              <Width>0.8165061</Width>
+              <Height>0.24845782</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1338,7 +1338,7 @@
                 <Text>worker</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1353,12 +1353,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>1.475373</X>
-              <Y>1.8382492</Y>
+              <X>1.5479059</X>
+              <Y>1.8274106</Y>
             </DYMOPoint>
             <Size>
-              <Width>3.8177671</Width>
-              <Height>0.20510395</Height>
+              <Width>3.914989</Width>
+              <Height>0.23302607</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1407,7 +1407,7 @@
                 <Text>ID:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1426,8 +1426,8 @@
               <Y>2.1160254</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.22223167</Width>
-              <Height>0.20833641</Height>
+              <Width>0.2466366</Width>
+              <Height>0.2237685</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1476,7 +1476,7 @@
                 <Text>id</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1491,12 +1491,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>0.985309</X>
+              <X>1.019163</X>
               <Y>2.122971</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.4583393</Width>
-              <Height>0.19444615</Height>
+              <Width>0.4583394</Width>
+              <Height>0.22531039</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1545,7 +1545,7 @@
                 <Text>STORE:</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1560,12 +1560,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>3.602202</X>
-              <Y>1.5552855</Y>
+              <X>3.3909853</X>
+              <Y>1.5461307</Y>
             </DYMOPoint>
             <Size>
-              <Width>0.5069539</Width>
-              <Height>0.201389</Height>
+              <Width>0.59855413</Width>
+              <Height>0.22664264</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
@@ -1614,7 +1614,7 @@
                 <Text>store</Text>
                 <FontInfo>
                   <FontName>Segoe UI</FontName>
-                  <FontSize>10</FontSize>
+                  <FontSize>12</FontSize>
                   <IsBold>True</IsBold>
                   <IsItalic>False</IsItalic>
                   <IsUnderline>False</IsUnderline>
@@ -1629,12 +1629,12 @@
           </FormattedText>
           <ObjectLayout>
             <DYMOPoint>
-              <X>4.1221795</X>
-              <Y>1.5545216</Y>
+              <X>3.9895399</X>
+              <Y>1.5422785</Y>
             </DYMOPoint>
             <Size>
-              <Width>1.1707972</Width>
-              <Height>0.1944451</Height>
+              <Width>1.3829888</Width>
+              <Height>0.22382583</Height>
             </Size>
           </ObjectLayout>
         </TextObject>
