@@ -6,22 +6,14 @@ export default defineConfig({
   base: "/Christmas/",
   plugins: [react()],
 
-  // server: {
-  //   proxy: {
-  //     "/Christmas/api": {
-  //       target: "http://localhost:80",
-  //       changeOrigin: true,
-  //       secure: false,
-  //     },
-  //   },
-  // },
-  // server: {
-  //   proxy: {
-  //     "/Christmas/api": {
-  //       target: "http://localhost:80",
-  //       changeOrigin: true,
-  //       secure: false,
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      "/Christmas/api": {
+        target: "http://localhost:80",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+  
 });
