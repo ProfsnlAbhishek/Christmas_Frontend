@@ -99,9 +99,6 @@ export default function Child() {
     formState: { errors },
   } = useForm<ChildFormValues>({
     resolver: zodResolver(ChildSchema),
-    defaultValues: selectedChild
-      ? mapChildToFormValues(selectedChild)
-      : emptyForm(),
   });
 
   const fullFormReset = () => {
@@ -141,6 +138,11 @@ export default function Child() {
 
   const createMutation = useCreateChild();
   const updateMutation = useUpdateChild(selectedChild?.childID ?? NaN);
+
+  // whenever selectedChild changes, update the form values
+  React.useEffect(() => {
+    reset(selectedChild ? mapChildToFormValues(selectedChild) : emptyForm());
+  }, [selectedChild, reset, emptyForm, mapChildToFormValues]);
 
   const { data: allDonors, isLoading: allDonorsLoading } = useActiveDonors();
 
