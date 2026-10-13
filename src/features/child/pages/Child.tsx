@@ -55,7 +55,7 @@ export default function Child() {
       childID: 0,
       f_name: "",
       l_name: "",
-      age: 0,
+      age: "",
       sacwisID: "",
       gender: "",
       race: "",
@@ -63,7 +63,7 @@ export default function Child() {
       size: "",
       shoe_size: null,
       gift_card: "",
-      workerID: 0,
+      workerID: null,
       donorID: 0,
       suggestion: "",
     }),
@@ -75,7 +75,7 @@ export default function Child() {
       childID: child.childID ?? 0,
       f_name: child.f_name ?? "",
       l_name: child.l_name ?? "",
-      age: child.age ?? 0,
+      age: child.age ?? "",
       sacwisID: child.sacwisID ?? "",
       gender: child.gender ?? "",
       race: child.race ?? "",
@@ -83,7 +83,7 @@ export default function Child() {
       size: child.size ?? "",
       shoe_size: child.shoe_size ?? null,
       gift_card: child.gift_card ?? "",
-      workerID: child.workerID ?? 0,
+      workerID: child.workerID ?? null,
       donorID: child.donorID ?? 0,
       suggestion: child.suggestion ?? "",
     }),
@@ -147,6 +147,8 @@ export default function Child() {
   const { data: allDonors, isLoading: allDonorsLoading } = useActiveDonors();
 
   const submit = handleSubmit(async (vals) => {
+
+    console.log(vals);
     try {
       const payload: Child = {
         childID: vals.childID,
@@ -1693,18 +1695,12 @@ const handlePrintPdfRollo = async () => {
                       {...field}
                       label="Age"
                       fullWidth
-                      type="number"
                       value={field.value ?? ""}
                       onChange={(e) => {
                         const val = e.target.value;
-                        field.onChange(val === "" ? null : Number(val));
+                        field.onChange(val === "" ? null : toUpperStr(val));
                       }}
-                      slotProps={{
-                        inputLabel: {
-                          shrink:
-                            field.value !== null && field.value !== undefined,
-                        },
-                      }}
+                  
                          error={!!errors.age}
                       helperText={errors.age?.message}
                     />
@@ -1718,7 +1714,7 @@ const handlePrintPdfRollo = async () => {
                   render={({ field }) => (
                     <FormControl fullWidth error={!!errors.gender}>
                       <InputLabel>Gender</InputLabel>
-                      <Select {...field} label="Gender">
+                      <Select {...field} label="Gender" value={field.value ?? ""}>
                         <MenuItem value=""></MenuItem>
                         <MenuItem value="MALE">MALE</MenuItem>
                         <MenuItem value="FEMALE">FEMALE</MenuItem>
@@ -1728,6 +1724,7 @@ const handlePrintPdfRollo = async () => {
                           variant="caption"
                           color="error"
                           sx={{ marginLeft: 2 }}
+                          
                         >
                           {errors.gender.message}
                         </Typography>
@@ -1741,7 +1738,7 @@ const handlePrintPdfRollo = async () => {
                   render={({ field }) => (
                     <FormControl fullWidth error={!!errors.race}>
                       <InputLabel>Race</InputLabel>
-                      <Select {...field} label="Race">
+                      <Select {...field} label="Race" value={field.value ?? ""}>
                         {race?.map((r, i) => (
                           <MenuItem key={i} value={r}>
                             {r}
@@ -1753,6 +1750,7 @@ const handlePrintPdfRollo = async () => {
                           variant="caption"
                           color="error"
                           sx={{ marginLeft: 2 }}
+                          
                         >
                           {errors.race.message}
                         </Typography>
@@ -1851,6 +1849,7 @@ const handlePrintPdfRollo = async () => {
                         labelId="gift-card-label"
                         {...field}
                         label="Gift Card Types"
+                        value={field.value ?? ""}
                         onClick={() => {
                           setValue("clothing_type", null);
                           setValue("size", "");
@@ -1896,7 +1895,7 @@ const handlePrintPdfRollo = async () => {
                           loading={employeesLoading}
                           onChange={(_, newValue) => {
                             field.onChange(
-                              newValue?.Employee_Index ?? undefined,
+                              newValue?.Employee_Index ?? null,
                             );
                           }}
                           getOptionLabel={(option) =>
