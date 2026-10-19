@@ -46,7 +46,6 @@ import { useDissociateChildFromDonor } from "../../child/hooks/useDissociateChil
 import { formatZip, toUpperStr } from "../../../utlis/formatting";
 import Toast from "../../../utlis/Toast";
 
-
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
@@ -100,6 +99,7 @@ export default function Donor() {
       state: "",
       zip: "",
       pick_date: "",
+      pick_time: "",
       pick_assigned_to: "",
       pick_det: "",
       kids_tag: 0,
@@ -137,6 +137,7 @@ export default function Donor() {
     state: donor.state ?? "",
     zip: donor.zip ?? "",
     pick_date: formatDateTime(donor.pick_date) ?? "",
+    pick_time: donor.pick_time ?? "",
     pick_assigned_to: donor.pick_assigned_to ?? "",
     pick_det: donor.pick_det ?? "",
     kids_tag: donor.kids_tag ?? 0,
@@ -182,11 +183,11 @@ export default function Donor() {
   const fullFormReset = () => {
     setSelectedDonor(null);
     reset(emptyForm());
-    setToast({open: true, msg:"Form Cleared", sev: "warning"})
+    setToast({ open: true, msg: "Form Cleared", sev: "warning" });
   };
 
   const { data: allDonors, isLoading: allDonorsLoading } = useDonor();
-
+  console.log(allDonors);
 
   const [inputValue, setInputValue] = React.useState<string>("");
   const [tabValue, setTabValue] = React.useState<number>(0);
@@ -204,17 +205,17 @@ export default function Donor() {
         donorID: selectedDonor!.donorID!,
       });
       setToast({
-      open: true, 
-      msg: "Donor contact deleted!",
-      sev: "success"
-    });
+        open: true,
+        msg: "Donor contact deleted!",
+        sev: "success",
+      });
     } catch (e) {
       console.error("Delete Donor Contact Failed", toErrorMessage(e));
       setToast({
-      open: true, 
-      msg: "Donor contact delete failed!",
-      sev: "error"
-    });
+        open: true,
+        msg: "Donor contact delete failed!",
+        sev: "error",
+      });
     }
   };
 
@@ -254,29 +255,31 @@ export default function Donor() {
 
   const { data: allDonorContacts } = useDonorContactByID(donorID);
 
-  const [newDonorFormDialogOpen, setNewDonorFormDialogOpen] = React.useState<boolean>(false);
+  const [newDonorFormDialogOpen, setNewDonorFormDialogOpen] =
+    React.useState<boolean>(false);
 
   const closeNewDonorFormDialog = () => setNewDonorFormDialogOpen(false);
 
   const onDonorSaved = () => {
     setToast({
-      open: true, 
+      open: true,
       msg: "Donor added successfully!",
-      sev: "success"
-    })
+      sev: "success",
+    });
   };
 
-  const onUpdateContact = () =>{
+  const onUpdateContact = () => {
     setToast({
-      open: true, 
+      open: true,
       msg: "Donor contact added successfully!",
-      sev: "success"
-    })
-  }
+      sev: "success",
+    });
+  };
 
   const updateMutation = useUpdateDonor(donorID);
 
   const submit = handleSubmit(async (vals) => {
+    console.log(vals);
     try {
       const payload: Donor = {
         donorID: vals.donorID,
@@ -287,6 +290,7 @@ export default function Donor() {
         state: vals.state ?? "",
         zip: vals.zip ?? "",
         pick_date: vals.pick_date,
+        pick_time: vals.pick_time,
         pick_assigned_to: vals.pick_assigned_to ?? "",
         pick_det: vals.pick_det ?? "",
         kids_tag: vals.kids_tag,
@@ -309,18 +313,15 @@ export default function Donor() {
       };
 
       if (vals.donorID !== 0) {
-
         const updated = await updateMutation.mutateAsync(payload);
-        setToast({open: true, msg:"Donor is updated!", sev: "success"})
+        setToast({ open: true, msg: "Donor is updated!", sev: "success" });
         setSelectedDonor(updated);
-        
       }
     } catch (e: unknown) {
       console.error("Donor Addition Failed", toErrorMessage(e));
-      setToast({open: true, msg:"Donor update failed!", sev: "error"})
+      setToast({ open: true, msg: "Donor update failed!", sev: "error" });
     }
   });
-
 
   const [donorContactFormOpen, setDonorContactFormOpen] =
     React.useState<boolean>(false);
@@ -356,9 +357,7 @@ export default function Donor() {
     selectedDonor?.donorID || 0,
   );
 
-
   const { data: allUnAssociatedChild } = useAllUnAssociated();
-
 
   const [selectedUnassignedChild, setSelectedUnassignedChild] =
     React.useState<ChildSmall | null>(null);
@@ -378,84 +377,82 @@ export default function Donor() {
   const handleAssignChild = () => {
     if (!selectedDonor) {
       console.warn("No donor selected");
-      setToast({open: true, msg:"Donor is not selected!", sev: "error"})
+      setToast({ open: true, msg: "Donor is not selected!", sev: "error" });
       return;
     }
 
     if (selectedDonor.active === false) {
       console.warn("Donor is inactive");
-      setToast({open: true, msg:"Donor is not active!", sev: "error"})
+      setToast({ open: true, msg: "Donor is not active!", sev: "error" });
       return;
     }
     if (!selectedUnassignedChild) {
       console.warn("No child selected");
-      setToast({open: true, msg:"Child is not selected!", sev: "error"})
+      setToast({ open: true, msg: "Child is not selected!", sev: "error" });
       return;
     }
 
     assignMutation.mutate({ donorID: selectedDonor.donorID ?? 0 });
-    setToast({open: true, msg:"Child is assigned!", sev: "success"})
+    setToast({ open: true, msg: "Child is assigned!", sev: "success" });
     setSelectedUnassignedChild(null);
   };
 
   const handledissociateChild = () => {
     if (!selectedDonor) {
       console.warn("No donor selected");
-      setToast({open: true, msg:"Donor is not selected!", sev: "error"})
+      setToast({ open: true, msg: "Donor is not selected!", sev: "error" });
       return;
     }
 
     if (selectedDonor.active === false) {
       console.warn("Donor is inactive");
-      setToast({open: true, msg:"Donor is not active!", sev: "error"})
+      setToast({ open: true, msg: "Donor is not active!", sev: "error" });
       return;
     }
 
     if (!selectedAssignedChild) {
       console.warn("No child selected");
-      setToast({open: true, msg:"Child is not selected!", sev: "error"})
+      setToast({ open: true, msg: "Child is not selected!", sev: "error" });
 
       return;
     }
 
     dissociateMutation.mutate({ childID: selectedAssignedChild.childID ?? 0 });
-    setToast({open: true, msg:"Child is dissociated!", sev: "success"})
+    setToast({ open: true, msg: "Child is dissociated!", sev: "success" });
     setSelectedAssignedChild(null);
   };
 
-
-
   const age0_11 = watch("age0_11");
   const age12abv = watch("age12abv");
-  React.useEffect(()=>{
+  React.useEffect(() => {
     const total = (age0_11 || 0) + (age12abv || 0);
-    setValue("kids_tag", Number(total ));
+    setValue("kids_tag", Number(total));
+  }, [age0_11, age12abv, setValue]);
 
+  const giftValues = useWatch({
+    control,
+    name: [
+      "inf_boy",
+      "inf_girl",
+      "tod_boy",
+      "tod_girl",
+      "age6_10b",
+      "age6_10g",
+      "age11_14b",
+      "age11_14g",
+      "age15_18b",
+      "age15_18g",
+    ],
+  });
 
-  },[age0_11,age12abv,setValue]);
+  React.useEffect(() => {
+    const total = giftValues.reduce<number>(
+      (sum, value) => sum + (value ?? 0),
+      0,
+    );
+    setValue("gift_tag", total);
+  }, [giftValues, setValue]);
 
-
-const giftValues = useWatch({
-  control,
-  name: [
-    "inf_boy",
-    "inf_girl",
-    "tod_boy",
-    "tod_girl",
-    "age6_10b",
-    "age6_10g",
-    "age11_14b",
-    "age11_14g",
-    "age15_18b",
-    "age15_18g",
-  ],
-});
-
-React.useEffect(() => {
-  const total = giftValues.reduce<number>((sum, value) => sum + (value ?? 0), 0);
-  setValue("gift_tag", total);
-}, [giftValues, setValue]);
-  
   return (
     <Box
       sx={{
@@ -466,7 +463,6 @@ React.useEffect(() => {
         flexDirection: "column",
       }}
     >
-
       <Stack direction="column" spacing={2}>
         <Box
           sx={{
@@ -528,7 +524,6 @@ React.useEffect(() => {
               >
                 Add New Donors
               </Button>
-             
             </Stack>
 
             <hr />
@@ -581,7 +576,6 @@ React.useEffect(() => {
                           }
                           setSelectedDonor(newValue);
                           reset(mapDonorToFormValues(newValue));
-                         
                         }}
                         onInputChange={(_, newInputValue) => {
                           setInputValue(newInputValue);
@@ -650,15 +644,26 @@ React.useEffect(() => {
                               //   !!selectedDonor
                               // ) {
                               //   console.log("Remove the associated child");
-                                
+
                               // } else {
                               //   console.log("this value should also change")
                               // }
-                              if(allChildByDonor?.length !== 0 && e.target.checked === false){
-                                console.log(allChildByDonor, e.target.checked,!!allChildByDonor);
-                                  setToast({open: true, msg: "Operation failed! Child is associated with the donor!", sev:"error"});
-                                    return;
-                              }else{
+                              if (
+                                allChildByDonor?.length !== 0 &&
+                                e.target.checked === false
+                              ) {
+                                console.log(
+                                  allChildByDonor,
+                                  e.target.checked,
+                                  !!allChildByDonor,
+                                );
+                                setToast({
+                                  open: true,
+                                  msg: "Operation failed! Child is associated with the donor!",
+                                  sev: "error",
+                                });
+                                return;
+                              } else {
                                 field.onChange(e.target.checked);
                               }
                             }}
@@ -774,15 +779,34 @@ React.useEffect(() => {
                   control={control}
                   render={({ field }) => (
                     <TextField
-                      fullWidth
                       {...field}
+                      fullWidth
                       label="Pick Up Date"
-                      type="datetime-local"
+                      type="date"
                       slotProps={{ inputLabel: { shrink: true } }}
                     />
                   )}
                 />
 
+                <Controller
+                  name="pick_time"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Pick Up Time"
+                      type="time"
+                      slotProps={{ inputLabel: { shrink: true } }}
+                    />
+                  )}
+                />
+              </Stack>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{ marginTop: 2, backgroundColor: "white" }}
+              >
                 <Controller
                   name="pick_assigned_to"
                   control={control}
@@ -1113,10 +1137,9 @@ React.useEffect(() => {
                                 label="Boy 11-14"
                                 type="number"
                                 value={field.value || ""}
-                                onChange={(e) =>{
-                  
-                                  field.onChange(Number(e.target.value))}
-                                }
+                                onChange={(e) => {
+                                  field.onChange(Number(e.target.value));
+                                }}
                                 fullWidth
                                 sx={{ mt: 2 }}
                               />

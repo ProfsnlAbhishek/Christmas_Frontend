@@ -61,6 +61,12 @@ export default function GetAllChildByID({ open, onClose, onSuccess }: Props) {
 
 
 
+
+const childOptions = React.useMemo(
+    () => [{ childID: 0, f_name: "All", l_name: "" }, ...(allChilds ?? [])],
+    [allChilds]
+  );
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth disableScrollLock>
       <DialogTitle>Print Child By ID</DialogTitle>
@@ -70,20 +76,25 @@ export default function GetAllChildByID({ open, onClose, onSuccess }: Props) {
             <Typography variant="body2" gutterBottom>
               Downloading report... {progress > 0 ? `${progress}%` : ``}
             </Typography>
-            <LinearProgress variant={progress > 0 ? "determinate" : "indeterminate"} value={progress} />
+            <LinearProgress
+              variant={progress > 0 ? "determinate" : "indeterminate"}
+              value={progress}
+            />
             <Box sx={{ mt: 2 }}>
               <Slider value={progress} disabled aria-label="download-progress" />
             </Box>
           </Box>
         ) : (
           <Autocomplete
-            options={allChilds ?? []}
-            value={allChilds?.find((c) => c.childID === id) ?? null}
+            options={childOptions}
+            value={childOptions.find((c) => c.childID === id) ?? childOptions[0]}
             onChange={(_, value) => setID(value?.childID ?? 0)}
-            getOptionLabel={(option) =>option.childID + ": " + option.f_name + " " + option.l_name}
-            isOptionEqualToValue={(option, value) =>
-              option.childID === value.childID
+            getOptionLabel={(option) =>
+              option.childID === 0
+                ? "All"
+                : `${option.childID}: ${option.f_name} ${option.l_name}`
             }
+            isOptionEqualToValue={(option, value) => option.childID === value.childID}
             renderInput={(params) => (
               <TextField {...params} label="Child" margin="normal" fullWidth />
             )}

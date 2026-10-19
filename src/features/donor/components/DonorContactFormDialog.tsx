@@ -173,7 +173,7 @@ const queryClient = useQueryClient();
             control={control}
             render={({ field }) => (
               <TextField
-                label="Fax"
+                label="Fax/Ext"
                 {...field}
                 fullWidth
                 onChange={(e) => field.onChange(toUpperStr(e.target.value))}

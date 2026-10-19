@@ -147,8 +147,6 @@ export default function Child() {
   const { data: allDonors, isLoading: allDonorsLoading } = useActiveDonors();
 
   const submit = handleSubmit(async (vals) => {
-
-    console.log(vals);
     try {
       const payload: Child = {
         childID: vals.childID,
@@ -168,9 +166,9 @@ export default function Child() {
       };
 
       if (!selectedChild) {
-        const created = await createMutation.mutateAsync(payload);
-        setSelectedChild(created);
-        reset(created as ChildFormValues);
+        await createMutation.mutateAsync(payload);
+
+        reset(emptyForm);
 
         setToast({
           open: true,
@@ -390,1129 +388,966 @@ export default function Child() {
     return lines.slice(0, 6).join("\n");
   };
 
-const handlePrintPdf = async () => {
-  if (multipleSelectedChildren.length === 0) {
-    alert("Select at least one child");
-    return;
-  }
+  const handlePrintPdf = async () => {
+    if (multipleSelectedChildren.length === 0) {
+      alert("Select at least one child");
+      return;
+    }
 
-  const loadImage = (src: string): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
+    const loadImage = (src: string): Promise<HTMLImageElement> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
 
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
-  };
-
-  try {
-    // LOAD IMAGES
-    const lightImage = await loadImage(light);
-    const sideLightImage = await loadImage(light_side);
-    const christmasImage = await loadImage(christmas_small);
-
-    // PDF
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "letter",
-    });
-
-    const pageWidth = 215.9;
-    const pageHeight = 279.4;
-
-    // LABEL SIZE — 6 × 4 IN
-    const labelWidth = 152.4;
-    const labelHeight = 101.6;
-
-    // TWO LABELS PER PAGE
-    const gapY = 20;
-
-    const totalHeight = labelHeight * 2 + gapY;
-    const startX = (pageWidth - labelWidth) / 2;
-    const startY = (pageHeight - totalHeight) / 2;
-
-    // LIGHT SETTINGS
-    const topBottomLightHeight = 11;
-    const topBottomLightWidth = 23;
-
-    const sideLightWidth = 11;
-    const sideLightHeight = 23;
-
-    // DRAW LIGHT BORDER
-    const drawLights = (labelX: number, labelY: number) => {
-      // TOP
-      for (let x = labelX; x < labelX + labelWidth; x += topBottomLightWidth) {
-        const remainingWidth = labelX + labelWidth - x;
-        const drawWidth = Math.min(topBottomLightWidth, remainingWidth);
-
-        pdf.addImage(lightImage, "PNG", x, labelY - 6, drawWidth, topBottomLightHeight);
-      }
-
-      // BOTTOM
-      for (let x = labelX; x < labelX + labelWidth; x += topBottomLightWidth) {
-        const remainingWidth = labelX + labelWidth - x;
-        const drawWidth = Math.min(topBottomLightWidth, remainingWidth);
-
-        pdf.addImage(lightImage, "PNG", x, labelY + labelHeight - 5, drawWidth, topBottomLightHeight);
-      }
-
-      // LEFT
-      for (let y = labelY; y < labelY + labelHeight; y += sideLightHeight) {
-        const remainingHeight = labelY + labelHeight - y;
-        const drawHeight = Math.min(sideLightHeight, remainingHeight);
-
-        pdf.addImage(sideLightImage, "PNG", labelX - 6, y, sideLightWidth, drawHeight);
-      }
-
-      // RIGHT
-      for (let y = labelY; y < labelY + labelHeight; y += sideLightHeight) {
-        const remainingHeight = labelY + labelHeight - y;
-        const drawHeight = Math.min(sideLightHeight, remainingHeight);
-
-        pdf.addImage(sideLightImage, "PNG", labelX + labelWidth - 5, y, sideLightWidth, drawHeight);
-      }
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
     };
 
-    // EACH CHILD LABEL
-    multipleSelectedChildren.forEach((child, index) => {
-      if (index > 0 && index % 2 === 0) pdf.addPage();
+    try {
+      // LOAD IMAGES
+      const lightImage = await loadImage(light);
+      const sideLightImage = await loadImage(light_side);
+      const christmasImage = await loadImage(christmas_small);
 
-      const position = index % 2;
-      const labelX = startX;
-      const labelY = startY + position * (labelHeight + gapY);
+      // PDF
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "letter",
+      });
 
-      // WHITE LABEL BACKGROUND
-      pdf.setFillColor(255, 255, 255);
-      pdf.rect(labelX, labelY, labelWidth, labelHeight, "F");
+      const pageWidth = 215.9;
+      const pageHeight = 279.4;
 
-      // CHRISTMAS LIGHTS
-      drawLights(labelX, labelY);
+      // LABEL SIZE — 6 × 4 IN
+      const labelWidth = 152.4;
+      const labelHeight = 101.6;
 
-      // DATA
-      const name = `${child.f_name ?? ""}`.trim();
-      const gender =
-        child.gender === "MALE" ? "BOY" :
-        child.gender === "FEMALE" ? "GIRL" :
-        "";
+      // TWO LABELS PER PAGE
+      const gapY = 20;
 
-      const worker = allEmployees?.find((e) => e.Employee_Index === child.workerID);
-      const workerName = worker ? `${worker.First_Name} ${worker.Last_Name}` : "";
+      const totalHeight = labelHeight * 2 + gapY;
+      const startX = (pageWidth - labelWidth) / 2;
+      const startY = (pageHeight - totalHeight) / 2;
 
-      const giftCard = child.gift_card == null ? "" : String(child.gift_card).trim();
-      const hasGiftCard = giftCard.length > 0;
+      // LIGHT SETTINGS
+      const topBottomLightHeight = 11;
+      const topBottomLightWidth = 23;
 
-      // TEXT LAYOUT
-      const leftX = labelX + 9;
-      const rightX = labelX + 78;
-      const rowSpacing = 8;
-      let y = labelY + 18;
+      const sideLightWidth = 11;
+      const sideLightHeight = 23;
 
-      // GLOBAL FONT SETTINGS (BOLD 12 for all except suggestions)
-      pdf.setTextColor(25, 25, 25);
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(12);
+      // DRAW LIGHT BORDER
+      const drawLights = (labelX: number, labelY: number) => {
+        // TOP
+        for (
+          let x = labelX;
+          x < labelX + labelWidth;
+          x += topBottomLightWidth
+        ) {
+          const remainingWidth = labelX + labelWidth - x;
+          const drawWidth = Math.min(topBottomLightWidth, remainingWidth);
 
-      //
-      // ROW 1 — NAME / AGE
-      //
-      pdf.text("NAME:", leftX, y);
-      pdf.text(name.toUpperCase(), leftX + 15, y);
+          pdf.addImage(
+            lightImage,
+            "PNG",
+            x,
+            labelY - 6,
+            drawWidth,
+            topBottomLightHeight,
+          );
+        }
 
-      pdf.text("AGE:", rightX, y);
-      pdf.text(String(child.age ?? ""), rightX + 13, y);
+        // BOTTOM
+        for (
+          let x = labelX;
+          x < labelX + labelWidth;
+          x += topBottomLightWidth
+        ) {
+          const remainingWidth = labelX + labelWidth - x;
+          const drawWidth = Math.min(topBottomLightWidth, remainingWidth);
 
-      //
-      // ROW 2 — GENDER / RACE
-      //
-      y += rowSpacing;
-      pdf.text("GENDER:", leftX, y);
-      pdf.text(gender, leftX + 20, y);
+          pdf.addImage(
+            lightImage,
+            "PNG",
+            x,
+            labelY + labelHeight - 5,
+            drawWidth,
+            topBottomLightHeight,
+          );
+        }
 
-      pdf.text("RACE:", rightX, y);
-      pdf.text(String(child.race ?? "").toUpperCase(), rightX + 15, y);
+        // LEFT
+        for (let y = labelY; y < labelY + labelHeight; y += sideLightHeight) {
+          const remainingHeight = labelY + labelHeight - y;
+          const drawHeight = Math.min(sideLightHeight, remainingHeight);
 
-      //
-      // IF GIFT CARD LABEL TYPE
-      //
-      if (hasGiftCard) {
-        y += rowSpacing;
-        pdf.text("GIFT CERTIFICATE:", leftX, y);
-        pdf.text("X", leftX + 42, y);
+          pdf.addImage(
+            sideLightImage,
+            "PNG",
+            labelX - 6,
+            y,
+            sideLightWidth,
+            drawHeight,
+          );
+        }
 
-        pdf.text("STORE:", rightX, y);
-        pdf.text(giftCard.toUpperCase(), rightX + 17, y);
+        // RIGHT
+        for (let y = labelY; y < labelY + labelHeight; y += sideLightHeight) {
+          const remainingHeight = labelY + labelHeight - y;
+          const drawHeight = Math.min(sideLightHeight, remainingHeight);
 
-        // WORKER
-        y += rowSpacing;
-        pdf.text("WORKER:", leftX, y);
-        pdf.text(workerName.toUpperCase(), leftX + 22, y);
+          pdf.addImage(
+            sideLightImage,
+            "PNG",
+            labelX + labelWidth - 5,
+            y,
+            sideLightWidth,
+            drawHeight,
+          );
+        }
+      };
 
-        // ID
-        y += rowSpacing;
-        pdf.text("ID:", leftX, y);
-        pdf.text(String(child.childID ?? ""), leftX + 9, y);
+      // EACH CHILD LABEL
+      multipleSelectedChildren.forEach((child, index) => {
+        if (index > 0 && index % 2 === 0) pdf.addPage();
 
-        // SMALL CHRISTMAS IMAGE
-        const christmasWidth = 24;
-        const christmasHeight = 24;
-        const christmasX = labelX + 4;
-        const christmasY = y + 3;
+        const position = index % 2;
+        const labelX = startX;
+        const labelY = startY + position * (labelHeight + gapY);
 
-        pdf.addImage(christmasImage, "JPEG", christmasX, christmasY, christmasWidth, christmasHeight);
+        // WHITE LABEL BACKGROUND
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(labelX, labelY, labelWidth, labelHeight, "F");
 
-      } else {
-        //
-        // NORMAL CLOTHING LABEL
-        //
-        const clothingFor =
-          clothing_type?.find((e) => e.typeID === Number(child.clothing_type))
-            ?.clothing_type ?? "";
+        // CHRISTMAS LIGHTS
+        drawLights(labelX, labelY);
 
-        // ROW 3 — CLOTHING / SHOES
-        y += rowSpacing;
-        pdf.text("CLOTHING FOR:", leftX, y);
-        pdf.text(clothingFor.toUpperCase(), leftX + 35, y);
+        // DATA
+        const name = `${child.f_name ?? ""}`.trim();
+        const gender =
+          child.gender === "MALE"
+            ? "BOY"
+            : child.gender === "FEMALE"
+              ? "GIRL"
+              : "";
 
-         pdf.text("SHOES:", rightX, y);
-        pdf.text(String(child.shoe_size ?? ""), rightX + 17, y);
+        const worker = allEmployees?.find(
+          (e) => e.Employee_Index === child.workerID,
+        );
+        const workerName = worker
+          ? `${worker.First_Name} ${worker.Last_Name}`
+          : "";
 
-        // ROW 4 — CLOTHING SIZE / ID
-        y += rowSpacing;
+        const giftCard =
+          child.gift_card == null ? "" : String(child.gift_card).trim();
+        const hasGiftCard = giftCard.length > 0;
 
-         pdf.text("CLOTHING SIZE:", leftX, y);
-        pdf.text(String(child.size ?? "").toUpperCase(), leftX + 35, y);
-        
+        // TEXT LAYOUT
+        const leftX = labelX + 9;
+        const rightX = labelX + 78;
+        const rowSpacing = 8;
+        let y = labelY + 18;
 
-        pdf.text("ID:", rightX, y);
-        pdf.text(String(child.childID ?? ""), rightX + 9, y);
-
-        // ROW 5 — WORKER
-        y += rowSpacing;
-        pdf.text("WORKER:", leftX, y);
-        pdf.text(workerName.toUpperCase(), leftX + 22, y);
-
-        //
-        // SUGGESTIONS SECTION
-        //
-        y += 8;
-
-        const suggestionLabelX = leftX;
-        const suggestionY = y;
-
-        // "SUGGESTIONS:" stays bold, size 12
+        // GLOBAL FONT SETTINGS (BOLD 12 for all except suggestions)
+        pdf.setTextColor(25, 25, 25);
         pdf.setFont("helvetica", "bold");
         pdf.setFontSize(12);
-        pdf.text("SUGGESTIONS:", suggestionLabelX, suggestionY);
 
-        // SUGGESTION TEXT (NORMAL, SMALL FONT)
-        const suggestionFontSize = 9.5;
-        const suggestionLineHeight = suggestionFontSize * 0.45 * 1.35;
+        //
+        // ROW 1 — NAME / AGE
+        //
+        pdf.text("NAME:", leftX, y);
+        pdf.text(name.toUpperCase(), leftX + 15, y);
 
-        pdf.setFont("helvetica", "bold");
-        pdf.setFontSize(suggestionFontSize);
+        pdf.text("AGE:", rightX, y);
+        pdf.text(String(child.age ?? ""), rightX + 13, y);
 
-        const christmasWidth = 24;
-        const christmasHeight = 24;
-        const christmasX = labelX + 4;
-        const christmasY = suggestionY + suggestionLineHeight - 2;
+        //
+        // ROW 2 — GENDER / RACE
+        //
+        y += rowSpacing;
+        pdf.text("GENDER:", leftX, y);
+        pdf.text(gender, leftX + 20, y);
 
-        const suggestion = String(child.suggestion ?? "")
-          .toUpperCase()
-          .trim();
+        pdf.text("RACE:", rightX, y);
+        pdf.text(String(child.race ?? "").toUpperCase(), rightX + 15, y);
 
-      
+        //
+        // IF GIFT CARD LABEL TYPE
+        //
+        if (hasGiftCard) {
+          y += rowSpacing;
+          pdf.text("GIFT CERTIFICATE:", leftX, y);
+          pdf.text("X", leftX + 42, y);
 
+          pdf.text("STORE:", rightX, y);
+          pdf.text(giftCard.toUpperCase(), rightX + 17, y);
 
-        if (suggestion !== "") {
-          const suggestionTextX = labelX + 44;
-          const imageTextX = christmasX + christmasWidth + 5;
-          const rightPadding = 8;
-          const textRight = labelX + labelWidth - rightPadding;
-          const firstLineWidth = textRight - suggestionTextX;
-          const imageLineWidth = textRight - imageTextX;
+          // WORKER
+          y += rowSpacing;
+          pdf.text("WORKER:", leftX, y);
+          pdf.text(workerName.toUpperCase(), leftX + 22, y);
 
-          const originalLines = suggestion.split(/\r?\n/);
-          const finalLines: { text: string; x: number; y: number }[] = [];
+          // ID
+          y += rowSpacing;
+          pdf.text("ID:", leftX, y);
+          pdf.text(String(child.childID ?? ""), leftX + 9, y);
 
-          let currentY = suggestionY;
+          // SMALL CHRISTMAS IMAGE
+          const christmasWidth = 24;
+          const christmasHeight = 24;
+          const christmasX = labelX + 4;
+          const christmasY = y + 3;
 
-          // FIRST LINE WRAP
-          const firstWrapped = pdf.splitTextToSize(originalLines[0] ?? "", firstLineWidth);
+          pdf.addImage(
+            christmasImage,
+            "JPEG",
+            christmasX,
+            christmasY,
+            christmasWidth,
+            christmasHeight,
+          );
+        } else {
+          //
+          // NORMAL CLOTHING LABEL
+          //
+          const clothingFor =
+            clothing_type?.find((e) => e.typeID === Number(child.clothing_type))
+              ?.clothing_type ?? "";
 
-          for (const line of firstWrapped) {
-            finalLines.push({ text: line, x: suggestionTextX, y: currentY });
-            currentY += suggestionLineHeight;
-          }
+          // ROW 3 — CLOTHING / SHOES
+          y += rowSpacing;
+          pdf.text("CLOTHING FOR:", leftX, y);
+          pdf.text(clothingFor.toUpperCase(), leftX + 35, y);
 
-          // REMAINING LINES (wrap to right side)
-          for (let i = 1; i < originalLines.length; i++) {
-            const wrapped = pdf.splitTextToSize(originalLines[i], imageLineWidth);
-            for (const line of wrapped) {
-              finalLines.push({ text: line, x: imageTextX, y: currentY });
+          pdf.text("SHOES:", rightX, y);
+          pdf.text(String(child.shoe_size ?? ""), rightX + 17, y);
+
+          // ROW 4 — CLOTHING SIZE / ID
+          y += rowSpacing;
+
+          pdf.text("CLOTHING SIZE:", leftX, y);
+          pdf.text(String(child.size ?? "").toUpperCase(), leftX + 35, y);
+
+          pdf.text("ID:", rightX, y);
+          pdf.text(String(child.childID ?? ""), rightX + 9, y);
+
+          // ROW 5 — WORKER
+          y += rowSpacing;
+          pdf.text("WORKER:", leftX, y);
+          pdf.text(workerName.toUpperCase(), leftX + 22, y);
+
+          //
+          // SUGGESTIONS SECTION
+          //
+          y += 8;
+
+          const suggestionLabelX = leftX;
+          const suggestionY = y;
+
+          // "SUGGESTIONS:" stays bold, size 12
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(12);
+          pdf.text("SUGGESTIONS:", suggestionLabelX, suggestionY);
+
+          // SUGGESTION TEXT (NORMAL, SMALL FONT)
+          const suggestionFontSize = 9.5;
+          const suggestionLineHeight = suggestionFontSize * 0.45 * 1.35;
+
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(suggestionFontSize);
+
+          const christmasWidth = 24;
+          const christmasHeight = 24;
+          const christmasX = labelX + 4;
+          const christmasY = suggestionY + suggestionLineHeight - 2;
+
+          const suggestion = String(child.suggestion ?? "")
+            .toUpperCase()
+            .trim();
+
+          if (suggestion !== "") {
+            const suggestionTextX = labelX + 44;
+            const imageTextX = christmasX + christmasWidth + 5;
+            const rightPadding = 8;
+            const textRight = labelX + labelWidth - rightPadding;
+            const firstLineWidth = textRight - suggestionTextX;
+            const imageLineWidth = textRight - imageTextX;
+
+            const originalLines = suggestion.split(/\r?\n/);
+            const finalLines: { text: string; x: number; y: number }[] = [];
+
+            let currentY = suggestionY;
+
+            // FIRST LINE WRAP
+            const firstWrapped = pdf.splitTextToSize(
+              originalLines[0] ?? "",
+              firstLineWidth,
+            );
+
+            for (const line of firstWrapped) {
+              finalLines.push({ text: line, x: suggestionTextX, y: currentY });
               currentY += suggestionLineHeight;
+            }
+
+            // REMAINING LINES (wrap to right side)
+            for (let i = 1; i < originalLines.length; i++) {
+              const wrapped = pdf.splitTextToSize(
+                originalLines[i],
+                imageLineWidth,
+              );
+              for (const line of wrapped) {
+                finalLines.push({ text: line, x: imageTextX, y: currentY });
+                currentY += suggestionLineHeight;
+              }
+            }
+
+            // PRINT SUGGESTION LINES
+            for (const line of finalLines) {
+              pdf.text(line.text, line.x, line.y);
             }
           }
 
-          // PRINT SUGGESTION LINES
-          for (const line of finalLines) {
-            pdf.text(line.text, line.x, line.y);
-          }
+          // CHRISTMAS IMAGE NEXT TO SUGGESTIONS
+          pdf.addImage(
+            christmasImage,
+            "JPEG",
+            christmasX,
+            christmasY,
+            christmasWidth,
+            christmasHeight,
+          );
         }
+      });
 
-        // CHRISTMAS IMAGE NEXT TO SUGGESTIONS
-        pdf.addImage(
-          christmasImage,
-          "JPEG",
-          christmasX,
-          christmasY,
-          christmasWidth,
-          christmasHeight
-        );
-      }
-    });
+      // DOWNLOAD
+      const fileName =
+        multipleSelectedChildren.length === 1
+          ? `child-label-${multipleSelectedChildren[0].childID}.pdf`
+          : `child-labels-${Date.now()}.pdf`;
 
-    // DOWNLOAD
-    const fileName =
-      multipleSelectedChildren.length === 1
-        ? `child-label-${multipleSelectedChildren[0].childID}.pdf`
-        : `child-labels-${Date.now()}.pdf`;
+      pdf.save(fileName);
 
-    pdf.save(fileName);
+      // SUCCESS TOAST
+      setToast({
+        open: true,
+        msg: `${multipleSelectedChildren.length} PDF Label${multipleSelectedChildren.length > 1 ? "s" : ""} Downloaded`,
+        sev: "success",
+      });
+    } catch (e: unknown) {
+      console.error("PDF generation failed", e);
 
-    // SUCCESS TOAST
-    setToast({
-      open: true,
-      msg: `${multipleSelectedChildren.length} PDF Label${multipleSelectedChildren.length > 1 ? "s" : ""} Downloaded`,
-      sev: "success",
-    });
-
-  } catch (e: unknown) {
-    console.error("PDF generation failed", e);
-
-    setToast({
-      open: true,
-      msg: e instanceof Error ? e.message : "Failed to generate PDF",
-      sev: "error",
-    });
-  }
-};
-
-const handlePrintPdfRollo = async () => {
-  if (multipleSelectedChildren.length === 0) {
-    alert("Select at least one child");
-    return;
-  }
-
-  const loadImage = (src: string): Promise<HTMLImageElement> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
+      setToast({
+        open: true,
+        msg: e instanceof Error ? e.message : "Failed to generate PDF",
+        sev: "error",
+      });
+    }
   };
 
-  try {
-    // ==================================================
-    // LOAD IMAGES
-    // ==================================================
+  const handlePrintPdfRollo = async () => {
+    if (multipleSelectedChildren.length === 0) {
+      alert("Select at least one child");
+      return;
+    }
 
-    const lightImage = await loadImage(light);
-    const sideLightImage = await loadImage(light_side);
-    const christmasImage = await loadImage(christmas_small);
+    const loadImage = (src: string): Promise<HTMLImageElement> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
 
-    // ==================================================
-    // LABEL SIZE
-    // 6 x 4 INCH
-    // ==================================================
-
-    const labelWidth = 150;
-    const labelHeight = 104;
-
-    // ==================================================
-    // CREATE PDF
-    // ONE 6 x 4 LABEL PER PAGE
-    // ==================================================
-
-    const pdf = new jsPDF({
-      orientation: "landscape",
-      unit: "mm",
-      format: [150, 104],
-      compress: true,
-    });
-
-    
-
-    // ==================================================
-    // CHRISTMAS LIGHT SETTINGS
-    // ==================================================
-
-    const topBottomLightHeight = 15;
-    const topBottomLightWidth = 50;
-
-    const sideLightWidth = 15;
-    const sideLightHeight = 50;
-
-    const lightInset = 8;
-
-    // ==================================================
-    // DRAW CHRISTMAS LIGHTS
-    // ==================================================
-
-    const drawLights = () => {
-      // ==================================================
-      // TOP
-      // ==================================================
-
-      for (
-        let x = lightInset - 3;
-        x < labelWidth - lightInset;
-        x += topBottomLightWidth
-      ) {
-        const remainingWidth =
-          labelWidth - lightInset - x;
-
-        const drawWidth = Math.min(
-          topBottomLightWidth,
-          remainingWidth,
-        );
-
-        pdf.addImage(
-          lightImage,
-          "PNG",
-          x,
-          lightInset - 6,
-          drawWidth,
-          topBottomLightHeight,
-        );
-      }
-
-      // ==================================================
-      // BOTTOM
-      // ==================================================
-
-      for (
-        let x = lightInset - 3;
-        x < labelWidth - lightInset;
-        x += topBottomLightWidth
-      ) {
-        const remainingWidth =
-          labelWidth - lightInset - x;
-
-        const drawWidth = Math.min(
-          topBottomLightWidth,
-          remainingWidth,
-        );
-
-        pdf.addImage(
-          lightImage,
-          "PNG",
-          x,
-          labelHeight - lightInset - 5,
-          drawWidth,
-          topBottomLightHeight,
-        );
-      }
-
-      // ==================================================
-      // LEFT
-      // ==================================================
-
-      for (
-        let y = lightInset;
-        y < labelHeight - lightInset;
-        y += sideLightHeight
-      ) {
-        const remainingHeight =
-          labelHeight - lightInset - y;
-
-        const drawHeight = Math.min(
-          sideLightHeight,
-          remainingHeight,
-        );
-
-        pdf.addImage(
-          sideLightImage,
-          "PNG",
-          lightInset - 8,
-          y,
-          sideLightWidth,
-          drawHeight,
-        );
-      }
-
-      // ==================================================
-      // RIGHT
-      // ==================================================
-
-      for (
-        let y = lightInset;
-        y < labelHeight - lightInset;
-        y += sideLightHeight
-      ) {
-        const remainingHeight =
-          labelHeight - lightInset - y;
-
-        const drawHeight = Math.min(
-          sideLightHeight,
-          remainingHeight,
-        );
-
-        pdf.addImage(
-          sideLightImage,
-          "PNG",
-          labelWidth - lightInset - 5,
-          y,
-          sideLightWidth,
-          drawHeight,
-        );
-      }
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
     };
 
-    // ==================================================
-    // PROCESS EACH CHILD
-    // ==================================================
-
-    multipleSelectedChildren.forEach((child, index) => {
+    try {
       // ==================================================
-      // NEW 6x4 PAGE FOR EVERY CHILD
+      // LOAD IMAGES
       // ==================================================
 
-      if (index > 0) {
-        pdf.addPage(
-          [labelWidth, labelHeight],
-          "landscape",
-        );
-      }
+      const lightImage = await loadImage(light);
+      const sideLightImage = await loadImage(light_side);
+      const christmasImage = await loadImage(christmas_small);
 
       // ==================================================
-      // LABEL POSITION
+      // LABEL SIZE
+      // 6 x 4 INCH
       // ==================================================
 
-      const labelX = 5;
-      const labelY = 8;
+      const labelWidth = 150;
+      const labelHeight = 104;
 
       // ==================================================
-      // WHITE LABEL BACKGROUND
+      // CREATE PDF
+      // ONE 6 x 4 LABEL PER PAGE
       // ==================================================
 
-      pdf.setFillColor(255, 255, 255);
-      pdf.rect(0,0,labelWidth, labelHeight, "F");
-
-      // pdf.rect(
-      //   labelX,
-      //   labelY,
-      //   labelWidth,
-      //   labelHeight,
-      //   "F",
-      // );
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: [150, 104],
+        compress: true,
+      });
 
       // ==================================================
-      // CHRISTMAS LIGHTS
+      // CHRISTMAS LIGHT SETTINGS
       // ==================================================
 
-      drawLights();
+      const topBottomLightHeight = 15;
+      const topBottomLightWidth = 50;
+
+      const sideLightWidth = 15;
+      const sideLightHeight = 50;
+
+      const lightInset = 8;
 
       // ==================================================
-      // CHILD DATA
+      // DRAW CHRISTMAS LIGHTS
       // ==================================================
 
-      const name = `${child.f_name ?? ""}`.trim();
-
-      const gender =
-        child.gender === "MALE"
-          ? "BOY"
-          : child.gender === "FEMALE"
-            ? "GIRL"
-            : "";
-
-      const worker = allEmployees?.find(
-        (e) => e.Employee_Index === child.workerID,
-      );
-
-      const workerName = worker
-        ? `${worker.First_Name} ${worker.Last_Name}`
-        : "";
-
-      // ==================================================
-      // GIFT CARD
-      // ==================================================
-
-      const giftCard =
-        child.gift_card == null
-          ? ""
-          : String(child.gift_card).trim();
-
-      const hasGiftCard = giftCard.length > 0;
-
-      // ==================================================
-      // TEXT SETTINGS
-      // EVERYTHING IS BOLD
-      // ==================================================
-
-      const leftX = labelX + 9;
-      const rightX = labelX + 78;
-
-      const rowSpacing = 8;
-
-      let y = labelY + 18;
-
-      pdf.setTextColor(25, 25, 25);
-
-      pdf.setFont("helvetica", "bold");
-
-      pdf.setFontSize(12);
-
-      // ==================================================
-      // ROW 1
-      // NAME / AGE
-      // ==================================================
-
-      pdf.text(
-        "NAME:",
-        leftX,
-        y,
-      );
-
-      pdf.text(
-        name.toUpperCase(),
-        leftX + 15,
-        y,
-      );
-
-      pdf.text(
-        "AGE:",
-        rightX,
-        y,
-      );
-
-      pdf.text(
-        String(child.age ?? ""),
-        rightX + 12,
-        y,
-      );
-
-      // ==================================================
-      // ROW 2
-      // GENDER / RACE
-      // ==================================================
-
-      y += rowSpacing;
-
-      pdf.text(
-        "GENDER:",
-        leftX,
-        y,
-      );
-
-      pdf.text(
-        gender,
-        leftX + 21,
-        y,
-      );
-
-      pdf.text(
-        "RACE:",
-        rightX,
-        y,
-      );
-
-      pdf.text(
-        String(child.race ?? "").toUpperCase(),
-        rightX + 14,
-        y,
-      );
-
-      // ==================================================
-      // GIFT CARD LABEL
-      // ==================================================
-
-      if (hasGiftCard) {
+      const drawLights = () => {
         // ==================================================
-        // ROW 3
-        // GIFT CERTIFICATE / STORE
+        // TOP
         // ==================================================
 
-        y += rowSpacing;
+        for (
+          let x = lightInset - 3;
+          x < labelWidth - lightInset;
+          x += topBottomLightWidth
+        ) {
+          const remainingWidth = labelWidth - lightInset - x;
 
-        pdf.text(
-          "GIFT CERTIFICATE:",
-          leftX,
-          y,
-        );
+          const drawWidth = Math.min(topBottomLightWidth, remainingWidth);
 
-        pdf.text(
-          "X",
-          leftX + 42,
-          y,
-        );
-
-        pdf.text(
-          "STORE:",
-          rightX,
-          y,
-        );
-
-        pdf.text(
-          giftCard.toUpperCase(),
-          rightX + 17,
-          y,
-        );
+          pdf.addImage(
+            lightImage,
+            "PNG",
+            x,
+            lightInset - 6,
+            drawWidth,
+            topBottomLightHeight,
+          );
+        }
 
         // ==================================================
-        // ROW 4
-        // WORKER
+        // BOTTOM
         // ==================================================
 
-        y += rowSpacing;
+        for (
+          let x = lightInset - 3;
+          x < labelWidth - lightInset;
+          x += topBottomLightWidth
+        ) {
+          const remainingWidth = labelWidth - lightInset - x;
 
-        pdf.text(
-          "WORKER:",
-          leftX,
-          y,
-        );
+          const drawWidth = Math.min(topBottomLightWidth, remainingWidth);
 
-        pdf.text(
-          workerName.toUpperCase(),
-          leftX + 23,
-          y,
-        );
-
-        // ==================================================
-        // ROW 5
-        // ID
-        // ==================================================
-
-        y += rowSpacing;
-
-        pdf.text(
-          "ID:",
-          leftX,
-          y,
-        );
-
-        pdf.text(
-          String(child.childID ?? ""),
-          leftX + 9,
-          y,
-        );
+          pdf.addImage(
+            lightImage,
+            "PNG",
+            x,
+            labelHeight - lightInset - 5,
+            drawWidth,
+            topBottomLightHeight,
+          );
+        }
 
         // ==================================================
-        // CHRISTMAS IMAGE
+        // LEFT
         // ==================================================
 
-        const christmasWidth = 24;
-        const christmasHeight = 24;
+        for (
+          let y = lightInset;
+          y < labelHeight - lightInset;
+          y += sideLightHeight
+        ) {
+          const remainingHeight = labelHeight - lightInset - y;
 
-        const christmasX = labelX + 4;
-        const christmasY = y + 3;
+          const drawHeight = Math.min(sideLightHeight, remainingHeight);
 
-        pdf.addImage(
-          christmasImage,
-          "JPEG",
-          christmasX,
-          christmasY,
-          christmasWidth,
-          christmasHeight,
-        );
-      } else {
-        // ==================================================
-        // NORMAL CLOTHING LABEL
-        // ==================================================
-
-        const clothingFor =
-          clothing_type?.find(
-            (e) =>
-              e.typeID ===
-              Number(child.clothing_type),
-          )?.clothing_type ?? "";
+          pdf.addImage(
+            sideLightImage,
+            "PNG",
+            lightInset - 8,
+            y,
+            sideLightWidth,
+            drawHeight,
+          );
+        }
 
         // ==================================================
-        // ROW 3
-        // CLOTHING / SHOES
+        // RIGHT
         // ==================================================
 
-        y += rowSpacing;
+        for (
+          let y = lightInset;
+          y < labelHeight - lightInset;
+          y += sideLightHeight
+        ) {
+          const remainingHeight = labelHeight - lightInset - y;
 
-        pdf.text(
-          "CLOTHING FOR:",
-          leftX,
-          y,
-        );
+          const drawHeight = Math.min(sideLightHeight, remainingHeight);
 
-        pdf.text(
-          clothingFor.toUpperCase(),
-          leftX + 35,
-          y,
-        );
+          pdf.addImage(
+            sideLightImage,
+            "PNG",
+            labelWidth - lightInset - 5,
+            y,
+            sideLightWidth,
+            drawHeight,
+          );
+        }
+      };
 
-        pdf.text(
-          "SHOES:",
-          rightX,
-          y,
-        );
+      // ==================================================
+      // PROCESS EACH CHILD
+      // ==================================================
 
-        pdf.text(
-          String(child.shoe_size ?? ""),
-          rightX + 16,
-          y,
-        );
-
-       
-
+      multipleSelectedChildren.forEach((child, index) => {
         // ==================================================
-        // ROW 4
-        // CLOTHING SIZE / ID
+        // NEW 6x4 PAGE FOR EVERY CHILD
         // ==================================================
 
-        y += rowSpacing;
-
-         pdf.text(
-          "CLOTHING SIZE:",
-          leftX,
-          y,
-        );
-
-        pdf.text(
-          String(child.size ?? "").toUpperCase(),
-          leftX + 35,
-          y,
-        );
-
-        pdf.text(
-          "ID:",
-          rightX,
-          y,
-        );
-
-        pdf.text(
-          String(child.childID ?? ""),
-          rightX + 9,
-          y,
-        );
+        if (index > 0) {
+          pdf.addPage([labelWidth, labelHeight], "landscape");
+        }
 
         // ==================================================
-        // ROW 5
-        // WORKER
+        // LABEL POSITION
         // ==================================================
 
-        y += rowSpacing;
+        const labelX = 5;
+        const labelY = 8;
 
-        pdf.text(
-          "WORKER:",
-          leftX,
-          y,
+        // ==================================================
+        // WHITE LABEL BACKGROUND
+        // ==================================================
+
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(0, 0, labelWidth, labelHeight, "F");
+
+        // pdf.rect(
+        //   labelX,
+        //   labelY,
+        //   labelWidth,
+        //   labelHeight,
+        //   "F",
+        // );
+
+        // ==================================================
+        // CHRISTMAS LIGHTS
+        // ==================================================
+
+        drawLights();
+
+        // ==================================================
+        // CHILD DATA
+        // ==================================================
+
+        const name = `${child.f_name ?? ""}`.trim();
+
+        const gender =
+          child.gender === "MALE"
+            ? "BOY"
+            : child.gender === "FEMALE"
+              ? "GIRL"
+              : "";
+
+        const worker = allEmployees?.find(
+          (e) => e.Employee_Index === child.workerID,
         );
 
-        pdf.text(
-          workerName.toUpperCase(),
-          leftX + 22,
-          y,
-        );
+        const workerName = worker
+          ? `${worker.First_Name} ${worker.Last_Name}`
+          : "";
 
         // ==================================================
-        // SUGGESTIONS
+        // GIFT CARD
         // ==================================================
 
-        y += 6;
+        const giftCard =
+          child.gift_card == null ? "" : String(child.gift_card).trim();
+
+        const hasGiftCard = giftCard.length > 0;
+
+        // ==================================================
+        // TEXT SETTINGS
+        // EVERYTHING IS BOLD
+        // ==================================================
+
+        const leftX = labelX + 9;
+        const rightX = labelX + 78;
+
+        const rowSpacing = 8;
+
+        let y = labelY + 18;
+
+        pdf.setTextColor(25, 25, 25);
 
         pdf.setFont("helvetica", "bold");
+
         pdf.setFontSize(12);
 
-        const suggestionLabelX = leftX;
-        const suggestionY = y;
-
-        pdf.text(
-          "SUGGESTIONS:",
-          suggestionLabelX,
-          suggestionY,
-        );
-
         // ==================================================
-        // CHRISTMAS IMAGE
+        // ROW 1
+        // NAME / AGE
         // ==================================================
 
-        const christmasWidth = 24;
-        const christmasHeight = 24;
+        pdf.text("NAME:", leftX, y);
 
-        const christmasX = labelX + 4;
+        pdf.text(name.toUpperCase(), leftX + 15, y);
 
-        const suggestionFontSize = 8.5;
+        pdf.text("AGE:", rightX, y);
 
-        const suggestionLineHeight =
-          suggestionFontSize * 0.45 * 1.35;
-
-        const christmasY =
-          suggestionY +
-          suggestionLineHeight -
-          2;
+        pdf.text(String(child.age ?? ""), rightX + 12, y);
 
         // ==================================================
-        // SUGGESTION TEXT
+        // ROW 2
+        // GENDER / RACE
         // ==================================================
 
-        const suggestion = String(
-          child.suggestion ?? "",
-        )
-          .toUpperCase()
-          .trim();
+        y += rowSpacing;
 
-        if (suggestion !== "") {
-          // ALL SUGGESTION TEXT BOLD
-          pdf.setFont(
-            "helvetica",
-            "bold",
-          );
+        pdf.text("GENDER:", leftX, y);
 
-          pdf.setFontSize(
-            suggestionFontSize,
-          );
+        pdf.text(gender, leftX + 21, y);
 
-          const suggestionTextX =
-            labelX + 43;
+        pdf.text("RACE:", rightX, y);
 
-          const imageTextX =
-            christmasX +
-            christmasWidth +
-            5;
+        pdf.text(String(child.race ?? "").toUpperCase(), rightX + 14, y);
 
-          const rightPadding = 8;
+        // ==================================================
+        // GIFT CARD LABEL
+        // ==================================================
 
-          const textRight =
-            labelX +
-            labelWidth -
-            rightPadding;
-
-          const firstLineWidth =
-            textRight -
-            suggestionTextX;
-
-          const imageLineWidth =
-            textRight -
-            imageTextX;
-
-          const originalLines =
-            suggestion.split(/\r?\n/);
-
-          const finalLines: {
-            text: string;
-            x: number;
-            y: number;
-          }[] = [];
-
+        if (hasGiftCard) {
           // ==================================================
-          // FIRST LINE
+          // ROW 3
+          // GIFT CERTIFICATE / STORE
           // ==================================================
 
-          const firstOriginalLine =
-            originalLines[0] ?? "";
+          y += rowSpacing;
 
-          const firstWrapped =
-            pdf.splitTextToSize(
+          pdf.text("GIFT CERTIFICATE:", leftX, y);
+
+          pdf.text("X", leftX + 42, y);
+
+          pdf.text("STORE:", rightX, y);
+
+          pdf.text(giftCard.toUpperCase(), rightX + 17, y);
+
+          // ==================================================
+          // ROW 4
+          // WORKER
+          // ==================================================
+
+          y += rowSpacing;
+
+          pdf.text("WORKER:", leftX, y);
+
+          pdf.text(workerName.toUpperCase(), leftX + 23, y);
+
+          // ==================================================
+          // ROW 5
+          // ID
+          // ==================================================
+
+          y += rowSpacing;
+
+          pdf.text("ID:", leftX, y);
+
+          pdf.text(String(child.childID ?? ""), leftX + 9, y);
+
+          // ==================================================
+          // CHRISTMAS IMAGE
+          // ==================================================
+
+          const christmasWidth = 24;
+          const christmasHeight = 24;
+
+          const christmasX = labelX + 4;
+          const christmasY = y + 3;
+
+          pdf.addImage(
+            christmasImage,
+            "JPEG",
+            christmasX,
+            christmasY,
+            christmasWidth,
+            christmasHeight,
+          );
+        } else {
+          // ==================================================
+          // NORMAL CLOTHING LABEL
+          // ==================================================
+
+          const clothingFor =
+            clothing_type?.find((e) => e.typeID === Number(child.clothing_type))
+              ?.clothing_type ?? "";
+
+          // ==================================================
+          // ROW 3
+          // CLOTHING / SHOES
+          // ==================================================
+
+          y += rowSpacing;
+
+          pdf.text("CLOTHING FOR:", leftX, y);
+
+          pdf.text(clothingFor.toUpperCase(), leftX + 35, y);
+
+          pdf.text("SHOES:", rightX, y);
+
+          pdf.text(String(child.shoe_size ?? ""), rightX + 16, y);
+
+          // ==================================================
+          // ROW 4
+          // CLOTHING SIZE / ID
+          // ==================================================
+
+          y += rowSpacing;
+
+          pdf.text("CLOTHING SIZE:", leftX, y);
+
+          pdf.text(String(child.size ?? "").toUpperCase(), leftX + 35, y);
+
+          pdf.text("ID:", rightX, y);
+
+          pdf.text(String(child.childID ?? ""), rightX + 9, y);
+
+          // ==================================================
+          // ROW 5
+          // WORKER
+          // ==================================================
+
+          y += rowSpacing;
+
+          pdf.text("WORKER:", leftX, y);
+
+          pdf.text(workerName.toUpperCase(), leftX + 22, y);
+
+          // ==================================================
+          // SUGGESTIONS
+          // ==================================================
+
+          y += 6;
+
+          pdf.setFont("helvetica", "bold");
+          pdf.setFontSize(12);
+
+          const suggestionLabelX = leftX;
+          const suggestionY = y;
+
+          pdf.text("SUGGESTIONS:", suggestionLabelX, suggestionY);
+
+          // ==================================================
+          // CHRISTMAS IMAGE
+          // ==================================================
+
+          const christmasWidth = 24;
+          const christmasHeight = 24;
+
+          const christmasX = labelX + 4;
+
+          const suggestionFontSize = 8.5;
+
+          const suggestionLineHeight = suggestionFontSize * 0.45 * 1.35;
+
+          const christmasY = suggestionY + suggestionLineHeight - 2;
+
+          // ==================================================
+          // SUGGESTION TEXT
+          // ==================================================
+
+          const suggestion = String(child.suggestion ?? "")
+            .toUpperCase()
+            .trim();
+
+          if (suggestion !== "") {
+            // ALL SUGGESTION TEXT BOLD
+            pdf.setFont("helvetica", "bold");
+
+            pdf.setFontSize(suggestionFontSize);
+
+            const suggestionTextX = labelX + 43;
+
+            const imageTextX = christmasX + christmasWidth + 5;
+
+            const rightPadding = 8;
+
+            const textRight = labelX + labelWidth - rightPadding;
+
+            const firstLineWidth = textRight - suggestionTextX;
+
+            const imageLineWidth = textRight - imageTextX;
+
+            const originalLines = suggestion.split(/\r?\n/);
+
+            const finalLines: {
+              text: string;
+              x: number;
+              y: number;
+            }[] = [];
+
+            // ==================================================
+            // FIRST LINE
+            // ==================================================
+
+            const firstOriginalLine = originalLines[0] ?? "";
+
+            const firstWrapped = pdf.splitTextToSize(
               firstOriginalLine,
               firstLineWidth,
             );
 
-          let currentY =
-            suggestionY;
+            let currentY = suggestionY;
 
-          for (const line of firstWrapped) {
-            finalLines.push({
-              text: line,
-              x: suggestionTextX,
-              y: currentY,
-            });
+            for (const line of firstWrapped) {
+              finalLines.push({
+                text: line,
+                x: suggestionTextX,
+                y: currentY,
+              });
 
-            currentY +=
-              suggestionLineHeight;
-          }
+              currentY += suggestionLineHeight;
+            }
 
-          // ==================================================
-          // REMAINING LINES
-          // ==================================================
+            // ==================================================
+            // REMAINING LINES
+            // ==================================================
 
-          for (
-            let i = 1;
-            i < originalLines.length;
-            i++
-          ) {
-            const wrapped =
-              pdf.splitTextToSize(
+            for (let i = 1; i < originalLines.length; i++) {
+              const wrapped = pdf.splitTextToSize(
                 originalLines[i],
                 imageLineWidth,
               );
 
-            for (const line of wrapped) {
-              finalLines.push({
-                text: line,
-                x: imageTextX,
-                y: currentY,
-              });
+              for (const line of wrapped) {
+                finalLines.push({
+                  text: line,
+                  x: imageTextX,
+                  y: currentY,
+                });
 
-              currentY +=
-                suggestionLineHeight;
+                currentY += suggestionLineHeight;
+              }
             }
-          }
 
-          // ==================================================
-          // SHRINK IF NEEDED
-          // ==================================================
+            // ==================================================
+            // SHRINK IF NEEDED
+            // ==================================================
 
-          const maxTextBottom =
-            labelY +
-            labelHeight -
-            6;
+            const maxTextBottom = labelY + labelHeight - 6;
 
-          const lastLine =
-            finalLines[
-              finalLines.length - 1
-            ];
+            const lastLine = finalLines[finalLines.length - 1];
 
-          if (
-            lastLine &&
-            lastLine.y > maxTextBottom
-          ) {
-            // KEEP BOLD WHEN SHRINKING
-            pdf.setFont(
-              "helvetica",
-              "bold",
-            );
+            if (lastLine && lastLine.y > maxTextBottom) {
+              // KEEP BOLD WHEN SHRINKING
+              pdf.setFont("helvetica", "bold");
 
-            pdf.setFontSize(7);
+              pdf.setFontSize(7);
 
-            const smallerLineHeight =
-              7 * 0.45 * 1.35;
+              const smallerLineHeight = 7 * 0.45 * 1.35;
 
-            finalLines.length = 0;
+              finalLines.length = 0;
 
-            let smallY =
-              suggestionY;
+              let smallY = suggestionY;
 
-            const firstSmall =
-              pdf.splitTextToSize(
+              const firstSmall = pdf.splitTextToSize(
                 firstOriginalLine,
                 firstLineWidth,
               );
 
-            for (
-              const line of firstSmall
-            ) {
-              finalLines.push({
-                text: line,
-                x: suggestionTextX,
-                y: smallY,
-              });
+              for (const line of firstSmall) {
+                finalLines.push({
+                  text: line,
+                  x: suggestionTextX,
+                  y: smallY,
+                });
 
-              smallY +=
-                smallerLineHeight;
-            }
+                smallY += smallerLineHeight;
+              }
 
-            for (
-              let i = 1;
-              i < originalLines.length;
-              i++
-            ) {
-              const wrapped =
-                pdf.splitTextToSize(
+              for (let i = 1; i < originalLines.length; i++) {
+                const wrapped = pdf.splitTextToSize(
                   originalLines[i],
                   imageLineWidth,
                 );
 
-              for (
-                const line of wrapped
-              ) {
-                finalLines.push({
-                  text: line,
-                  x: imageTextX,
-                  y: smallY,
-                });
+                for (const line of wrapped) {
+                  finalLines.push({
+                    text: line,
+                    x: imageTextX,
+                    y: smallY,
+                  });
 
-                smallY +=
-                  smallerLineHeight;
+                  smallY += smallerLineHeight;
+                }
               }
+            }
+
+            // ==================================================
+            // PRINT SUGGESTION
+            // ==================================================
+
+            // MAKE ABSOLUTELY SURE IT IS BOLD
+            pdf.setFont("helvetica", "bold");
+
+            for (const line of finalLines) {
+              pdf.text(line.text, line.x, line.y);
             }
           }
 
           // ==================================================
-          // PRINT SUGGESTION
+          // CHRISTMAS IMAGE
           // ==================================================
 
-          // MAKE ABSOLUTELY SURE IT IS BOLD
-          pdf.setFont(
-            "helvetica",
-            "bold",
+          pdf.addImage(
+            christmasImage,
+            "JPEG",
+            christmasX,
+            christmasY,
+            christmasWidth,
+            christmasHeight,
           );
-
-          for (
-            const line of finalLines
-          ) {
-            pdf.text(
-              line.text,
-              line.x,
-              line.y,
-            );
-          }
         }
+      });
 
-        // ==================================================
-        // CHRISTMAS IMAGE
-        // ==================================================
+      // ==================================================
+      // SAVE PDF
+      // ==================================================
 
-        pdf.addImage(
-          christmasImage,
-          "JPEG",
-          christmasX,
-          christmasY,
-          christmasWidth,
-          christmasHeight,
-        );
-      }
-    });
+      const fileName =
+        multipleSelectedChildren.length === 1
+          ? `child-label-rollo-${multipleSelectedChildren[0].childID}.pdf`
+          : `child-label-rollo-${Date.now()}.pdf`;
 
-    // ==================================================
-    // SAVE PDF
-    // ==================================================
+      pdf.save(fileName);
 
-    const fileName =
-      multipleSelectedChildren.length === 1
-        ? `child-label-rollo-${multipleSelectedChildren[0].childID}.pdf`
-        : `child-label-rollo-${Date.now()}.pdf`;
+      // ==================================================
+      // SUCCESS TOAST
+      // ==================================================
 
-    pdf.save(fileName);
+      setToast({
+        open: true,
+        msg: `${multipleSelectedChildren.length} Rollo Label${
+          multipleSelectedChildren.length > 1 ? "s" : ""
+        } Generated`,
+        sev: "success",
+      });
+    } catch (e: unknown) {
+      console.error("Rollo PDF generation failed", e);
 
-    // ==================================================
-    // SUCCESS TOAST
-    // ==================================================
-
-    setToast({
-      open: true,
-      msg: `${multipleSelectedChildren.length} Rollo Label${
-        multipleSelectedChildren.length > 1
-          ? "s"
-          : ""
-      } Generated`,
-      sev: "success",
-    });
-  } catch (e: unknown) {
-    console.error(
-      "Rollo PDF generation failed",
-      e,
-    );
-
-    setToast({
-      open: true,
-      msg:
-        e instanceof Error
-          ? e.message
-          : "Failed to generate Rollo PDF",
-      sev: "error",
-    });
-  }
-};
-
+      setToast({
+        open: true,
+        msg: e instanceof Error ? e.message : "Failed to generate Rollo PDF",
+        sev: "error",
+      });
+    }
+  };
 
   return (
     <Box
@@ -1556,7 +1391,12 @@ const handlePrintPdfRollo = async () => {
           }}
         />
 
-        <Stack direction="row">
+       
+<Stack
+  direction={{ xs: "column", md: "row" }}
+  sx={{ width: "100%" }}
+>
+
           <Box
             sx={{
               width: "8%",
@@ -1576,7 +1416,7 @@ const handlePrintPdfRollo = async () => {
           />
 
           <Box sx={{ p: 5, width: "75%", flexDirection: "row" }}>
-            <Stack direction="row" spacing={2}>
+            <Stack direction="row" spacing={2} sx={{ alignItems: "flex-end" }}>
               <Typography variant="h4" component="h2" sx={{ flex: 1 }}>
                 ADOPT A CHILD
               </Typography>
@@ -1585,6 +1425,7 @@ const handlePrintPdfRollo = async () => {
                 variant="contained"
                 color="warning"
                 onClick={() => fullFormReset()}
+                sx={{ height: 40 }}
               >
                 Clear Form
               </Button>
@@ -1592,6 +1433,7 @@ const handlePrintPdfRollo = async () => {
                 variant="contained"
                 color={selectedChild ? "info" : "success"}
                 onClick={submit}
+                sx={{ height: 40 }}
               >
                 {selectedChild ? "Update Child" : "Add Child"}
               </Button>
@@ -1700,8 +1542,7 @@ const handlePrintPdfRollo = async () => {
                         const val = e.target.value;
                         field.onChange(val === "" ? null : toUpperStr(val));
                       }}
-                  
-                         error={!!errors.age}
+                      error={!!errors.age}
                       helperText={errors.age?.message}
                     />
                   )}
@@ -1714,7 +1555,11 @@ const handlePrintPdfRollo = async () => {
                   render={({ field }) => (
                     <FormControl fullWidth error={!!errors.gender}>
                       <InputLabel>Gender</InputLabel>
-                      <Select {...field} label="Gender" value={field.value ?? ""}>
+                      <Select
+                        {...field}
+                        label="Gender"
+                        value={field.value ?? ""}
+                      >
                         <MenuItem value=""></MenuItem>
                         <MenuItem value="MALE">MALE</MenuItem>
                         <MenuItem value="FEMALE">FEMALE</MenuItem>
@@ -1724,7 +1569,6 @@ const handlePrintPdfRollo = async () => {
                           variant="caption"
                           color="error"
                           sx={{ marginLeft: 2 }}
-                          
                         >
                           {errors.gender.message}
                         </Typography>
@@ -1750,7 +1594,6 @@ const handlePrintPdfRollo = async () => {
                           variant="caption"
                           color="error"
                           sx={{ marginLeft: 2 }}
-                          
                         >
                           {errors.race.message}
                         </Typography>
@@ -1894,9 +1737,7 @@ const handlePrintPdfRollo = async () => {
                           value={selectedSupervisor}
                           loading={employeesLoading}
                           onChange={(_, newValue) => {
-                            field.onChange(
-                              newValue?.Employee_Index ?? null,
-                            );
+                            field.onChange(newValue?.Employee_Index ?? null);
                           }}
                           getOptionLabel={(option) =>
                             `${option.First_Name} ${option.Last_Name}`

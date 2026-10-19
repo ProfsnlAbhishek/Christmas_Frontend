@@ -7,6 +7,7 @@ export interface Donor{
     state : string;
     zip : string;
     pick_date?: string;
+    pick_time?: string;
     pick_assigned_to: string;
     pick_det: string;
     kids_tag?: number;

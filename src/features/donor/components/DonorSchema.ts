@@ -9,6 +9,7 @@ export const DonorSchema = z.object({
     state: z.string().optional(),
     zip: z.string().optional(),
     pick_date: z.string(),
+    pick_time: z.string(),
     pick_assigned_to: z.string().optional(),
     pick_det: z.string().optional().nullable(),
     kids_tag: z.number().optional(),
